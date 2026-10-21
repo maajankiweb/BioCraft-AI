@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#31104b" />
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="60" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-grad)" />
+
+  <!-- Background Glow Orbs -->
+  <circle cx="200" cy="150" r="180" fill="#7c3aed" opacity="0.25" filter="url(#glow)" />
+  <circle cx="1000" cy="480" r="220" fill="#4f46e5" opacity="0.3" filter="url(#glow)" />
+
+  <!-- Top Badge -->
+  <rect x="100" y="90" width="370" height="44" rx="22" fill="#3b0764" stroke="#a855f7" stroke-width="1.5" />
+  <text x="130" y="118" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#e9d5ff">✨ Powered by Google Gemini 3.8 Flash</text>
+
+  <!-- Main Headline -->
+  <text x="100" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1">
+    BioCraft <tspan fill="url(#accent-grad)">AI</tspan>
+  </text>
+  <text x="100" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="700" fill="#cbd5e1" letter-spacing="-0.5">
+    Free AI Bio &amp; Headline Generator
+  </text>
+
+  <!-- Subtitle -->
+  <text x="100" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="400" fill="#94a3b8">
+    Instant profile copywriting with strict character limits for 7 platforms.
+  </text>
+
+  <!-- Feature Tags Row -->
+  <g transform="translate(100, 410)">
+    <!-- Tag 1 -->
+    <rect x="0" y="0" width="180" height="46" rx="12" fill="#1e293b" stroke="#334155" />
+    <text x="20" y="29" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#f8fafc">📸 Instagram (150)</text>
+
+    <!-- Tag 2 -->
+    <rect x="195" y="0" width="180" height="46" rx="12" fill="#1e293b" stroke="#334155" />
+    <text x="215" y="29" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#f8fafc">💼 LinkedIn (220)</text>
+
+    <!-- Tag 3 -->
+    <rect x="390" y="0" width="165" height="46" rx="12" fill="#1e293b" stroke="#334155" />
+    <text x="410" y="29" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#f8fafc">🎵 TikTok (80)</text>
+
+    <!-- Tag 4 -->
+    <rect x="570" y="0" width="175" height="46" rx="12" fill="#1e293b" stroke="#334155" />
+    <text x="590" y="29" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#f8fafc">🐦 Twitter / X (160)</text>
+
+    <!-- Tag 5 -->
+    <rect x="760" y="0" width="220" height="46" rx="12" fill="#1e293b" stroke="#334155" />
+    <text x="780" y="29" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#f8fafc">🇮🇳 Hindi &amp; Hinglish</text>
+  </g>
+
+  <!-- Bottom Bar -->
+  <line x1="100" y1="510" x2="1100" y2="510" stroke="#334155" stroke-width="1" />
+  <text x="100" y="555" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="500" fill="#64748b">
+    100% Free • No Sign-up Required • Real-Time Character Counter • 1-Click Copy
+  </text>
+  <text x="1100" y="555" text-anchor="end" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#38bdf8">
+    biocraft-ai.vercel.app
+  </text>
+</svg>

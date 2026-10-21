@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 
-interface FAQItem {
+export interface FAQItem {
   question: string;
   answer: string;
 }
 
-const FAQS: FAQItem[] = [
+const DEFAULT_FAQS: FAQItem[] = [
   {
     question: 'What is an AI bio generator?',
     answer:
@@ -15,7 +15,7 @@ const FAQS: FAQItem[] = [
   {
     question: 'Is BioCraft AI free to use?',
     answer:
-      'Yes! BioCraft AI is free to use when hosted with your Google AI Studio or Gemini API key. There are no paywalls, mandatory user accounts, or hidden subscriptions.',
+      'Yes! BioCraft AI is 100% free to use. There are no paywalls, mandatory user accounts, or hidden subscriptions.',
   },
   {
     question: 'Which platforms are supported?',
@@ -39,8 +39,14 @@ const FAQS: FAQItem[] = [
   },
 ];
 
-export const FAQSection: React.FC = () => {
+interface FAQSectionProps {
+  extraFaqs?: FAQItem[];
+}
+
+export const FAQSection: React.FC<FAQSectionProps> = ({ extraFaqs }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const allFaqs = extraFaqs && extraFaqs.length > 0 ? [...extraFaqs, ...DEFAULT_FAQS] : DEFAULT_FAQS;
 
   const toggle = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx);
@@ -58,12 +64,12 @@ export const FAQSection: React.FC = () => {
             Frequently Asked Questions
           </h2>
           <p className="mt-3 text-base text-slate-600">
-            Everything you need to know about BioCraft AI, platform limits, and data privacy.
+            Everything you need to know about BioCraft AI, platform limits, and copywriting rules.
           </p>
         </div>
 
         <div className="space-y-4">
-          {FAQS.map((faq, idx) => {
+          {allFaqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div
