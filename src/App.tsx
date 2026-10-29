@@ -11,14 +11,19 @@ import { SeoContentSection } from './components/SeoContentSection.tsx';
 import { AboutPage } from './components/AboutPage.tsx';
 import { ContactPage } from './components/ContactPage.tsx';
 import { BlogPage } from './components/BlogPage.tsx';
+import { PrivacyPage } from './components/PrivacyPage.tsx';
+import { TermsPage } from './components/TermsPage.tsx';
+import { FeedbackPage } from './components/FeedbackPage.tsx';
+import { FaqDirectoryPage } from './components/FaqDirectoryPage.tsx';
 import { Footer } from './components/Footer.tsx';
 import { LegalModal } from './components/LegalModal.tsx';
 import { GeneratedBio, BioFormInput } from './types/bio.ts';
 import { countGraphemes } from './utils/bioUtils.ts';
 import { LANDING_PAGES, LandingPageConfig } from './data/landingPages.ts';
 import { BLOG_POSTS } from './data/blogPosts.ts';
+import { getFaqsForPage, generateFaqSchema } from './data/faqs.ts';
 
-export type PageView = 'home' | 'about' | 'contact' | 'blog';
+export type PageView = 'home' | 'about' | 'contact' | 'blog' | 'privacy' | 'terms' | 'feedback' | 'faq';
 
 export default function App() {
   const [bios, setBios] = useState<GeneratedBio[]>([]);
@@ -34,6 +39,22 @@ export default function App() {
   const applySeo = (view: PageView, platformSlug?: string, blogSlug?: string) => {
     if (typeof document === 'undefined') return;
 
+    const updateFaqSchema = (pageKey: string) => {
+      try {
+        const faqs = getFaqsForPage(pageKey);
+        let script = document.getElementById('dynamic-faq-schema') as HTMLScriptElement | null;
+        if (!script) {
+          script = document.createElement('script');
+          script.id = 'dynamic-faq-schema';
+          script.type = 'application/ld+json';
+          document.head.appendChild(script);
+        }
+        script.textContent = JSON.stringify(generateFaqSchema(faqs));
+      } catch {
+        // Fallback
+      }
+    };
+
     if (view === 'about') {
       document.title = 'About BioCraft AI | Our Mission & Technology';
       document.querySelector('meta[name="description"]')?.setAttribute(
@@ -41,6 +62,7 @@ export default function App() {
         'Learn why BioCraft AI was built to end cut-off social bios and false hallucinations. Powered by Google Gemini 3.8 and strict grapheme counting.'
       );
       document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/about');
+      updateFaqSchema('about');
       return;
     }
 
@@ -51,6 +73,7 @@ export default function App() {
         'Have a question, feature suggestion, or platform limit update for BioCraft AI? Contact our team directly. We respond within 24 hours.'
       );
       document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/contact');
+      updateFaqSchema('contact');
       return;
     }
 
@@ -61,6 +84,7 @@ export default function App() {
           document.title = `${post.title} | BioCraft AI Blog`;
           document.querySelector('meta[name="description"]')?.setAttribute('content', post.excerpt);
           document.getElementById('canonical-url')?.setAttribute('href', `https://biocraft-ai.vercel.app/blog/${post.slug}`);
+          updateFaqSchema('general');
           return;
         }
       }
@@ -70,6 +94,51 @@ export default function App() {
         'Read data-backed playbooks on Instagram bio limits, LinkedIn headline formulas, TikTok 80-character hooks, and Hinglish copywriting.'
       );
       document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/blog');
+      updateFaqSchema('general');
+      return;
+    }
+
+    if (view === 'privacy') {
+      document.title = 'Privacy Policy | BioCraft AI';
+      document.querySelector('meta[name="description"]')?.setAttribute(
+        'content',
+        'Learn about BioCraft AI zero-persistence architecture. Your personal inputs are processed ephemerally in RAM and never stored in a database.'
+      );
+      document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/privacy');
+      updateFaqSchema('privacy');
+      return;
+    }
+
+    if (view === 'terms') {
+      document.title = 'Terms of Use & License | BioCraft AI';
+      document.querySelector('meta[name="description"]')?.setAttribute(
+        'content',
+        'Review the terms of use for BioCraft AI. 100% ownership of generated bios for commercial and personal use with zero royalties.'
+      );
+      document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/terms');
+      updateFaqSchema('terms');
+      return;
+    }
+
+    if (view === 'feedback') {
+      document.title = 'Send Feedback & Feature Requests | BioCraft AI';
+      document.querySelector('meta[name="description"]')?.setAttribute(
+        'content',
+        'Help us improve BioCraft AI. Suggest new platforms, report character limit changes, or share your copywriting experience.'
+      );
+      document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/feedback');
+      updateFaqSchema('contact');
+      return;
+    }
+
+    if (view === 'faq') {
+      document.title = 'Frequently Asked Questions (FAQ) & Platform Limits | BioCraft AI';
+      document.querySelector('meta[name="description"]')?.setAttribute(
+        'content',
+        'Search 20+ verified answers on social media bio limits, character counts, emoji handling, Hinglish copywriting, and privacy guarantees.'
+      );
+      document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/faq');
+      updateFaqSchema('general');
       return;
     }
 
@@ -84,6 +153,7 @@ export default function App() {
       document.getElementById('og-url')?.setAttribute('href', `https://biocraft-ai.vercel.app${config.canonicalPath}`);
       document.getElementById('twitter-title')?.setAttribute('content', config.pageTitle);
       document.getElementById('twitter-description')?.setAttribute('content', config.metaDescription);
+      updateFaqSchema(platformSlug);
     } else {
       document.title = 'Free AI Bio Generator for Instagram, LinkedIn, TikTok & X | BioCraft AI';
       document.querySelector('meta[name="description"]')?.setAttribute(
@@ -91,6 +161,7 @@ export default function App() {
         'Generate high-converting, personalized social media bios and professional headlines with AI. Strictly enforced platform limits, 3 languages, and zero login required.'
       );
       document.getElementById('canonical-url')?.setAttribute('href', 'https://biocraft-ai.vercel.app/');
+      updateFaqSchema('general');
     }
   };
 
@@ -120,6 +191,38 @@ export default function App() {
       setActiveSlug('');
       setCurrentBlogSlug(undefined);
       applySeo('blog');
+      return;
+    }
+
+    if (path === 'privacy' || path === 'privacy-policy') {
+      setCurrentView('privacy');
+      setActiveSlug('');
+      setCurrentBlogSlug(undefined);
+      applySeo('privacy');
+      return;
+    }
+
+    if (path === 'terms' || path === 'terms-of-use') {
+      setCurrentView('terms');
+      setActiveSlug('');
+      setCurrentBlogSlug(undefined);
+      applySeo('terms');
+      return;
+    }
+
+    if (path === 'feedback' || path === 'send-feedback') {
+      setCurrentView('feedback');
+      setActiveSlug('');
+      setCurrentBlogSlug(undefined);
+      applySeo('feedback');
+      return;
+    }
+
+    if (path === 'faq' || path === 'faqs' || path === 'help') {
+      setCurrentView('faq');
+      setActiveSlug('');
+      setCurrentBlogSlug(undefined);
+      applySeo('faq');
       return;
     }
 
@@ -176,6 +279,10 @@ export default function App() {
     if (page === 'about') url = '/about';
     else if (page === 'contact') url = '/contact';
     else if (page === 'blog') url = postSlug ? `/blog/${postSlug}` : '/blog';
+    else if (page === 'privacy') url = '/privacy';
+    else if (page === 'terms') url = '/terms';
+    else if (page === 'feedback') url = '/feedback';
+    else if (page === 'faq') url = '/faq';
 
     if (window.location.pathname !== url) {
       window.history.pushState({}, '', url);
@@ -292,6 +399,7 @@ export default function App() {
         onScrollToGenerator={handleScrollToGenerator}
         onNavigateToPlatform={handleNavigateToPlatform}
         onNavigateToPage={handleNavigateToPage}
+        currentPage={currentView}
       />
 
       {/* Main Content: Switches between Generator, About, Contact, and Blog views */}
@@ -300,6 +408,7 @@ export default function App() {
           <AboutPage
             onNavigateToHome={() => handleNavigateToPage('home')}
             onScrollToGenerator={handleScrollToGenerator}
+            onNavigateToContact={() => handleNavigateToPage('contact')}
           />
         )}
 
@@ -307,6 +416,7 @@ export default function App() {
           <ContactPage
             onNavigateToHome={() => handleNavigateToPage('home')}
             onScrollToFaq={handleScrollToFaq}
+            onOpenPrivacyModal={() => setModalType('privacy')}
           />
         )}
 
@@ -317,6 +427,37 @@ export default function App() {
             onNavigateToBlogIndex={() => handleNavigateToPage('blog')}
             onNavigateToHome={() => handleNavigateToPage('home')}
             onScrollToGenerator={handleScrollToGenerator}
+          />
+        )}
+
+        {currentView === 'privacy' && (
+          <PrivacyPage
+            onNavigateToHome={() => handleNavigateToPage('home')}
+            onScrollToGenerator={handleScrollToGenerator}
+            onNavigateToContact={() => handleNavigateToPage('contact')}
+          />
+        )}
+
+        {currentView === 'terms' && (
+          <TermsPage
+            onNavigateToHome={() => handleNavigateToPage('home')}
+            onScrollToGenerator={handleScrollToGenerator}
+            onNavigateToContact={() => handleNavigateToPage('contact')}
+          />
+        )}
+
+        {currentView === 'feedback' && (
+          <FeedbackPage
+            onNavigateToHome={() => handleNavigateToPage('home')}
+            onScrollToGenerator={handleScrollToGenerator}
+          />
+        )}
+
+        {currentView === 'faq' && (
+          <FaqDirectoryPage
+            onNavigateToHome={() => handleNavigateToPage('home')}
+            onScrollToGenerator={handleScrollToGenerator}
+            onNavigateToContact={() => handleNavigateToPage('contact')}
           />
         )}
 
@@ -365,7 +506,11 @@ export default function App() {
             <ExampleBiosSection onSelectExample={handleSelectExample} />
 
             {/* FAQ Section */}
-            <FAQSection extraFaqs={activeLandingConfig?.tailoredFaqs} />
+            <FAQSection
+              extraFaqs={activeLandingConfig?.tailoredFaqs}
+              platformSlug={activeSlug}
+              onNavigateToFaqDirectory={() => handleNavigateToPage('faq')}
+            />
           </>
         )}
       </main>
